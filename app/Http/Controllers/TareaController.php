@@ -15,7 +15,9 @@ class TareaController extends Controller
     public function index()
     {
       //$tareas = Consultar tareas de tabla tareas
-      return view('tareas.tareaIndex');
+      $tareas = Tarea::all();
+      //En compact va el nombre de la variable como string sin el símbolo $
+      return view('tareas.tareaIndex', compact('tareas'));
       //->with(['tareas' => $tareas]);
     }
 
@@ -37,7 +39,17 @@ class TareaController extends Controller
      */
     public function store(Request $request)
     {
-        return redirect('tarea');
+        //return redirect('tarea');
+        //dd($request->fecha_entrega);
+        $tarea = new Tarea();
+        $tarea->tarea = $request->tarea;
+        $tarea->prioridad = $request->prioridad;
+        $tarea->fecha_entrega = $request->fecha_entrega;
+        $tarea->descripcion = $request->descripcion;
+        //dd($tarea);
+        $tarea->save();
+
+        return redirect()->route('tarea.index');
     }
 
     /**
@@ -48,8 +60,7 @@ class TareaController extends Controller
      */
     public function show(Tarea $tarea)
     {
-      //$tarea = consultar tarea where id = $tarea
-      return view('tarea.tareaShow');
+      return view('tareas.tareaShow', compact('tarea'));
       //->with(['tarea' => $tarea]);
     }
 
@@ -61,7 +72,8 @@ class TareaController extends Controller
      */
     public function edit(Tarea $tarea)
     {
-        //
+        return view('tareas.tareaForm', compact('tarea'));
+
     }
 
     /**
@@ -73,7 +85,15 @@ class TareaController extends Controller
      */
     public function update(Request $request, Tarea $tarea)
     {
-        //
+        //$tarea es el registro y $request la nueva información
+        $tarea->tarea = $request->tarea;
+        $tarea->prioridad = $request->prioridad;
+        $tarea->fecha_entrega = $request->fecha_entrega;
+        $tarea->descripcion = $request->descripcion;
+        //dd($tarea);
+        $tarea->save();
+
+        return redirect()->route('tarea.show', $tarea->id);
     }
 
     /**
@@ -84,6 +104,7 @@ class TareaController extends Controller
      */
     public function destroy(Tarea $tarea)
     {
-        //
+      $tarea->delete();
+      return redirect()->route('tarea.index');
     }
 }
