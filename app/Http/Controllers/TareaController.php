@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class TareaController extends Controller
 {
+    public function __construct(){
+      $this->middleware('auth')->except('index');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -39,9 +42,16 @@ class TareaController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+          'tarea' => 'required|max:255',
+          'prioridad' => 'required|int|min:1|max:3',
+          'fecha_entrega' => 'required|date',
+          'descripcion' => 'required'
+        ]);
         //return redirect('tarea');
         //dd($request->fecha_entrega);
         $tarea = new Tarea();
+        $tarea->user_id = \Auth::id();
         $tarea->tarea = $request->tarea;
         $tarea->prioridad = $request->prioridad;
         $tarea->fecha_entrega = $request->fecha_entrega;
@@ -85,6 +95,12 @@ class TareaController extends Controller
      */
     public function update(Request $request, Tarea $tarea)
     {
+        $request->validate([
+          'tarea' => 'required|max:255',
+          'prioridad' => 'required|int|min:1|max:3',
+          'fecha_entrega' => 'required|date',
+          'descripcion' => 'required'
+        ]);
         //$tarea es el registro y $request la nueva información
         $tarea->tarea = $request->tarea;
         $tarea->prioridad = $request->prioridad;

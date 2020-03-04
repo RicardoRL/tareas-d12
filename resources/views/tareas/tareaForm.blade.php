@@ -7,19 +7,29 @@
             <div class="card">
                 <div class="card-header">Crear nueva tarea</div>
                 <div class="card-body">
-                  {{-- No user_id categoria_id equipo_id --}}
-                  @if(isset($tarea))
-                    <form action = "{{ route('tarea.update', $tarea->id)}}" method="POST">
-                    @method('PATCH')
-                  @else
-                    <form action = "{{ route('tarea.store')}}" method="POST">
+                  @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                   @endif
-                    @csrf
+                  @if(isset($tarea))
+                    {!! Form::model($tarea, ['route' => ['tarea.update', $tarea->id], 'method' => 'PATCH']) !!}
+                  @else
+                    {!! Form::open(['route' => 'tarea.store']) !!}
+                  @endif
                     <!-- Campo de texto para nombre de la tarea -->
                     <div class="form-group">
-                      <label for="nombreTarea">Nombre de tarea</label>
-                      <input type="text" class="form-control" id="nombreTarea" placeholder="Escribe el nombre de la tarea" name="tarea"
-                      value="{{$tarea->tarea ?? ''}}" required>
+                      {!! Form::label('nombreTarea', 'Nombre de tarea') !!}
+                      {!! Form::text('tarea', null, [
+                        'class' => 'form-control',
+                        'id' => 'nombreTarea',
+                        'placeholder' => 'Escribe el nombre de la tarea',
+                        'required'
+                      ]) !!}
                     </div>
                     <!-- Radiobuttons para la prioridad -->
                     <div class="form-group">
@@ -43,17 +53,22 @@
                     <!-- Campo de texto para la fecha -->
                     <div class="form-group">
                       <label for="fechaEntrega">Fecha de entrega</label>
-                      <input type="date" class="form-control" id="fechaEntrega" name="fecha_entrega"
-                      value="{{$tarea->fecha_entrega ?? ''}}">
+                      {!! Form::date('fecha_entrega', null, [
+                      'class' => 'form-control',
+                      'id' => 'fechaEntrega'
+                      ])  !!}
                     </div>
                     <!-- Campo de texto para la descripción -->
                     <div class="form-group">
                       <label for="descripcionTarea">Descripción</label>
-                      <textarea class="form-control" id="descripcionTarea" rows="3" name="descripcion">{{$tarea->descripcion ?? ''}}
-                      </textarea>
+                      {!! Form::text('descripcion', null, [
+                      'class' => 'form-control',
+                      'id' => 'descripcionTarea',
+                      'rows' => '3'
+                      ]) !!}
                     </div>
                     <button type="submit" class="btn btn-primary">Guardar</button>
-                  </form>
+                  {!! Form::close() !!}
                 </div>
             </div>
         </div>
